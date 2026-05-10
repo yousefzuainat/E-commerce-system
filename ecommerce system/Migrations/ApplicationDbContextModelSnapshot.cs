@@ -8,7 +8,7 @@ using ecommerce_system.Data;
 
 #nullable disable
 
-namespace ecommerce_system.Data.Migrations
+namespace ecommerce_system.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot

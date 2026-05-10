@@ -9,11 +9,11 @@ using ecommerce_system.Data;
 
 #nullable disable
 
-namespace ecommerce_system.Data.Migrations
+namespace ecommerce_system.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260510121651_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260510123538_FinalInitialCreate")]
+    partial class FinalInitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
