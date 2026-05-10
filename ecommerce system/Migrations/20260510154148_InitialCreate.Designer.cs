@@ -12,8 +12,8 @@ using ecommerce_system.Data;
 namespace ecommerce_system.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260510123538_FinalInitialCreate")]
-    partial class FinalInitialCreate
+    [Migration("20260510154148_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -104,8 +104,8 @@ namespace ecommerce_system.Migrations
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("LockoutEnd")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -420,7 +420,7 @@ namespace ecommerce_system.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("transction_data")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime");
 
                     b.HasKey("Id");
 

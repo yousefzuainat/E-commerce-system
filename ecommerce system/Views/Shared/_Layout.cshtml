@@ -7,9 +7,12 @@
     <script type="importmap"></script>
 
     <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="~/shopping-cart.png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ecommerce_system.styles.css" asp-append-version="true" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css
+    " rel="stylesheet" />
 </head>
 <body>
     <div class="main-container">
@@ -182,6 +185,36 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "4000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+        @if (TempData["success"] != null)
+        {
+            <text>toastr.success('@Html.Raw(TempData["success"])');</text>
+        }
+        @if (TempData["error"] != null)
+        {
+            <text>toastr.error('@Html.Raw(TempData["error"])');</text>
+        }
+        @if (TempData["warning"] != null)
+        {
+            <text>toastr.warning('@Html.Raw(TempData["warning"])');</text>
+        }
+        @if (TempData["info"] != null)
+        {
+            <text>toastr.info('@Html.Raw(TempData["info"])');</text>
+        }
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
