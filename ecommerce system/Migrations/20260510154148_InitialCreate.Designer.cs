@@ -9,11 +9,11 @@ using ecommerce_system.Data;
 
 #nullable disable
 
-namespace ecommerce_system.Data.Migrations
+namespace ecommerce_system.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260510121258_yousef#1")]
-    partial class yousef1
+    [Migration("20260510154148_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -104,8 +104,8 @@ namespace ecommerce_system.Data.Migrations
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("LockoutEnd")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -420,7 +420,7 @@ namespace ecommerce_system.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("transction_data")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime");
 
                     b.HasKey("Id");
 

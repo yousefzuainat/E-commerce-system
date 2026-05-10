@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ecommerce_system.Data;
 using ecommerce_system.Models;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using ecommerce_system.ViewModel;
 
 namespace ecommerce_system.Controllers
 {
@@ -46,23 +49,46 @@ namespace ecommerce_system.Controllers
         // GET: Proudects/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.categories, "Id", "Name");
+            ViewData["CategoryId"] = new SelectList(_context.categories, dataValueField: "Id", dataTextField: "Name");
             return View();
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Descrption,Img,Price,CategoryId")] Proudect proudect)
+        public async Task<IActionResult> Create(ProudectCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
+                string? imgPath = null;
+                if (model.Upload != null && model.Upload.Length > 0)
+                {
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Upload.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.Upload.CopyToAsync(stream);
+                    }
+
+                    imgPath = "/images/products/" + fileName;
+                }
+
+                var proudect = new Proudect
+                {
+                    Name = model.Name,
+                    Descrption = model.Descrption,
+                    Price = model.Price,
+                    CategoryId = model.CategoryId,
+                    Img = imgPath
+                };
+
                 _context.Add(proudect);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.categories, "Id", "Name", proudect.CategoryId);
-            return View(proudect);
+            ViewData["CategoryId"] = new SelectList(_context.categories, dataValueField: "Id", dataTextField: "Name", selectedValue: model.CategoryId);
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -77,15 +103,26 @@ namespace ecommerce_system.Controllers
             {
                 return NotFound();
             }
+
+            var model = new ProudectEditViewModel
+            {
+                Id = proudect.Id,
+                Name = proudect.Name,
+                Descrption = proudect.Descrption,
+                Price = proudect.Price,
+                CategoryId = proudect.CategoryId,
+                ExistingImg = proudect.Img
+            };
+
             ViewData["CategoryId"] = new SelectList(_context.categories, "Id", "Name", proudect.CategoryId);
-            return View(proudect);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Descrption,Img,Price,CategoryId")] Proudect proudect)
+        public async Task<IActionResult> Edit(int id, ProudectEditViewModel model)
         {
-            if (id != proudect.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -94,12 +131,36 @@ namespace ecommerce_system.Controllers
             {
                 try
                 {
+                    var proudect = await _context.proudects.FindAsync(model.Id);
+                    if (proudect == null)
+                    {
+                        return NotFound();
+                    }
+
+                    proudect.Name = model.Name;
+                    proudect.Descrption = model.Descrption;
+                    proudect.Price = model.Price;
+                    proudect.CategoryId = model.CategoryId;
+
+                    if (model.Upload != null && model.Upload.Length > 0)
+                    {
+                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Upload.FileName);
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products", fileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await model.Upload.CopyToAsync(stream);
+                        }
+
+                        proudect.Img = "/images/products/" + fileName;
+                    }
+
                     _context.Update(proudect);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProudectExists(proudect.Id))
+                    if (!ProudectExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -110,8 +171,8 @@ namespace ecommerce_system.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.categories, "Id", "Name", proudect.CategoryId);
-            return View(proudect);
+            ViewData["CategoryId"] = new SelectList(_context.categories, "Id", "Name", model.CategoryId);
+            return View(model);
         }
 
         public async Task<IActionResult> Delete(int? id)
