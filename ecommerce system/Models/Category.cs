@@ -8,5 +8,6 @@
 
         public string Img { get; set; }
 
+        public ICollection<Proudect>? Proudects { get; set; }
     }
 }
