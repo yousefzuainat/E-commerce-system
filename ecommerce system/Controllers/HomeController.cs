@@ -13,11 +13,20 @@ namespace ecommerce_system.Controllers
 
         public HomeController(ApplicationDbContext context)
         {
-            return View();
+            _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("Index", "Admin");
+
+                if (User.IsInRole("User"))
+                    return RedirectToAction("Index", "User");
+            }
+            
             var products = await _context.proudects.Include(p => p.Category).ToListAsync();
             return View(products);
         }
