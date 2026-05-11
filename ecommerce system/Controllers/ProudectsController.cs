@@ -22,10 +22,23 @@ namespace ecommerce_system.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        // GET: Proudects
+        public async Task<IActionResult> Index(int? categoryId)
         {
-            var applicationDbContext = _context.proudects.Include(p => p.Category);
-            return View(await applicationDbContext.ToListAsync());
+            // Start with all products including category info
+            IQueryable<Proudect> query = _context.proudects.Include(p => p.Category);
+
+            // If a categoryId is provided, filter the list
+            if (categoryId != null)
+            {
+                query = query.Where(p => p.CategoryId == categoryId);
+
+                // Optional: Pass the category name to the view to show in a heading
+                var category = await _context.categories.FindAsync(categoryId);
+                ViewBag.FilteredCategory = category?.Name;
+            }
+
+            return View(await query.ToListAsync());
         }
 
         public async Task<IActionResult> Details(int? id)

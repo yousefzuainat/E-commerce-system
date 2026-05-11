@@ -22,23 +22,24 @@ namespace ecommerce_system.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.categories.ToListAsync());
+            // Use .Include to "Eager Load" the related products
+            var categoriesWithProducts = await _context.categories
+                .Include(c => c.Proudects)
+                .ToListAsync();
+
+            return View(categoriesWithProducts);
         }
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var category = await _context.categories
+                .Include(c => c.Proudects) // Add this!
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
+
+            if (category == null) return NotFound();
 
             return View(category);
         }
@@ -54,10 +55,30 @@ namespace ecommerce_system.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Img")] Category category)
+        // Added IFormFile imageFile to receive the actual file from the form
+        public async Task<IActionResult> Create([Bind("Id,Name")] Category category, IFormFile? imageFile)
         {
             if (ModelState.IsValid)
             {
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    // 1. Define the folder path
+                    string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Categories");
+
+                    // 2. Create a unique filename
+                    string fileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+                    string filePath = Path.Combine(folder, fileName);
+
+                    // 3. Save the file to the folder
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+
+                    // 4. Save the filename to the database property
+                    category.Img = fileName;
+                }
+
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -86,30 +107,46 @@ namespace ecommerce_system.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Img")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Img")] Category category, IFormFile? imageFile)
         {
-            if (id != category.Id)
-            {
-                return NotFound();
-            }
+            if (id != category.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (imageFile != null && imageFile.Length > 0)
+                    {
+                        // 1. Define folder
+                        string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Categories");
+
+                        // 2. Create unique filename
+                        string fileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(imageFile.FileName);
+                        string filePath = Path.Combine(folder, fileName);
+
+                        // 3. Save the new file
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await imageFile.CopyToAsync(stream);
+                        }
+
+                        // 4. Update the object with the NEW filename
+                        category.Img = fileName;
+                    }
+                    else
+                    {
+                        // If no new image is uploaded, keep the existing one
+                        // We must prevent EF from overwriting 'Img' with null
+                        _context.Entry(category).Property(x => x.Img).IsModified = (imageFile != null);
+                    }
+
                     _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!CategoryExists(category.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }

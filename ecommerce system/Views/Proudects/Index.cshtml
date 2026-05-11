@@ -1,107 +1,120 @@
 @model IEnumerable<ecommerce_system.Models.Proudect>
 
 @{
-    ViewData["Title"] = "products list";
+    ViewData["Title"] = "Products List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container py-5" dir="rtl">
-    
-    <div class="d-flex justify-content-between align-items-center mb-4">
+@if (ViewBag.FilteredCategory != null)
+{
+    <div style="margin-bottom: 20px; padding: 10px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid #6366f1; color: #6366f1;">
+        Showing products for category: <strong>@ViewBag.FilteredCategory</strong>
+        <a asp-action="Index" style="margin-left: 20px; text-decoration: underline; color: #6366f1;">Clear Filter</a>
+    </div>
+}
+
+<link rel="stylesheet" href="~/css/voltex_pro.css" />
+<link rel="stylesheet" href="~/css/categories.css" />
+
+<div class="page-wrap">
+    <div class="breadcrumb reveal">
+        <span class="bc-current">Products</span>
+    </div>
+
+    <div class="page-hdr reveal">
         <div>
-            <h2 class="fw-bold" style="color: #2c3e50;">
-                <i class="fas fa-box-open me-2 text-primary"></i> products list
-            </h2>
-            <p class="text-muted">manage all products in your store</p>
+            <p class="page-eye">Store Management</p>
+            <h1 class="page-ttl">PRODUCTS<br>LIST</h1>
         </div>
-        <a asp-action="Create" class="btn btn-primary btn-lg shadow-sm" style="border-radius: 10px;">
-            <i class="fas fa-plus me-2"></i> add new product
+        <a asp-action="Create" class="btn-primary-v">
+            <span>+</span> Add New Product
         </a>
     </div>
 
-
-    <div class="card border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover table-borderless align-middle text-center mb-0">
-                    <thead class="table-light text-muted">
-                        <tr>
-                            <th class="py-3 px-4">image</th>
-                            <th class="py-3">product name</th>
-                            <th class="py-3">description</th>
-                            <th class="py-3">price</th>
-                            <th class="py-3">category</th>
-                            <th class="py-3">actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (!Model.Any())
-                        {
-                            <tr>
-                                <td colspan="6" class="text-center py-5">
-                                    <div class="text-muted">
-                                        <i class="fas fa-box fa-3x mb-3 text-black-50"></i>
-                                        <h5 class="fw-bold">no products found</h5>
-                                        <p>start by adding a new product to your store.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                        else
-                        {
-                            @foreach (var item in Model) {
-                                <tr class="border-bottom">
-                                    <td class="py-3 px-4">
-                                        @if (!string.IsNullOrEmpty(item.Img))
-                                        {
-                                            <img src="@item.Img" alt="@item.Name" class="rounded shadow-sm" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #f8f9fa;" />
-                                        }
-                                        else
-                                        {
-                                            <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted shadow-sm" style="width: 60px; height: 60px; margin: 0 auto; border: 2px solid #e9ecef;">
-                                                <i class="fas fa-image fa-lg"></i>
-                                            </div>
-                                        }
-                                    </td>
-                                    
-                                    <td class="fw-bold text-dark">
-                                        @item.Name
-                                    </td>
-                                    
-                                    <td class="text-muted" style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="@item.Descrption">
-                                        @item.Descrption
-                                    </td>
-                                    
-                                    <td>
-                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fs-6 border border-success">
-                                            $@item.Price
-                                        </span>
-                                    </td>
-                                    
-                                    <td>
-                                        <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3 py-2 border border-secondary">
-                                            @(item.Category?.Name ?? "N/A")
-                                        </span>
-                                    </td>
-                                    
-                                    <td>
-                                        <div class="btn-group shadow-sm" role="group" style="border-radius: 8px; overflow: hidden;">
-                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm px-3" title="edit">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm px-3" title="details">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm px-3" title="delete">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
+    @* ── Search / filter bar ── *@
+    <div class="cat-filter-bar reveal">
+        <div class="cat-search-wrap">
+            <span class="cs-icon">⌕</span>
+            <input type="text" id="prodSearch" placeholder="Search products..." class="cat-search-input" />
+        </div>
+        <div class="cat-sort-wrap">
+            <select id="prodSort" class="cat-sort-select">
+                <option value="name">Sort: Name A–Z</option>
+                <option value="name-desc">Sort: Name Z–A</option>
+                <option value="price-asc">Sort: Price: Low to High</option>
+                <option value="price-desc">Sort: Price: High to Low</option>
+            </select>
         </div>
     </div>
+
+    <div class="v-table-wrap reveal">
+        <table class="v-table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            @* Added ID here for JavaScript targeting *@
+            <tbody id="prodTableBody">
+                @if (!Model.Any())
+                {
+                    <tr id="emptyRow">
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <span class="empty-icon">📦</span>
+                                <div class="empty-ttl">No Products Found</div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        @* Added class and data- attributes for filtering/sorting *@
+                        <tr class="prod-row"
+                            data-name="@item.Name.ToLower()"
+                            data-price="@item.Price">
+                            <td class="td-img">
+                                @if (!string.IsNullOrEmpty(item.Img))
+                                {
+                                    <img src="@item.Img" alt="@item.Name" />
+                                }
+                                else
+                                {
+                                    <div class="img-placeholder">📷</div>
+                                }
+                            </td>
+                            <td class="td-name">@item.Name</td>
+                            <td class="td-desc" title="@item.Descrption">@item.Descrption</td>
+                            <td><span class="td-price">$@item.Price</span></td>
+                            <td><span class="td-cat">@(item.Category?.Name ?? "N/A")</span></td>
+                            <td>
+                                <div class="act-group">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="act-btn edit" title="Edit">✏</a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="act-btn view" title="Details">◉</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="act-btn del" title="Delete">✕</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @* Message shown when search finds nothing *@
+    <div id="prodNoResults" style="display:none; text-align:center; padding: 40px;">
+        <p class="empty-ttl">No matching products found</p>
+    </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/Products.js" asp-append-version="true"></script>
+    <script src="~/js/voltex.jss" asp-append-version="true"></script>
+}
