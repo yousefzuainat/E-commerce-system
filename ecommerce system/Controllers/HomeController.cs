@@ -13,7 +13,7 @@ namespace ecommerce_system.Controllers
 
         public HomeController(ApplicationDbContext context)
         {
-            _context = context;
+            return View();
         }
 
         public async Task<IActionResult> Index()
