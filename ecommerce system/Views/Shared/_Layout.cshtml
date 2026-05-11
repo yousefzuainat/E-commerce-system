@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,54 +8,76 @@
 
     <link href="~/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="icon" type="image/png" href="~/shopping-cart.png" />
+    
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ecommerce_system.styles.css" asp-append-version="true" />
-    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css
-    " rel="stylesheet" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 </head>
 <body>
     <div class="main-container">
         <header>
-            <nav class="navbar navbar-expand-lg bg-dark mb-3" data-bs-theme="dark">
-                <div class="container-fluid">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ecommerce_system</a>
+            <nav class="navbar navbar-expand-lg border-bottom" style="border-color: var(--bs-border-color) !important; background-color: var(--bs-dark) !important;">
+                <div class="container-fluid px-4">
+                    <!-- Brand -->
+                    <a class="navbar-brand d-flex align-items-center gap-3" asp-area="" asp-controller="Home" asp-action="Index">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 32px; height: 32px; background-color: var(--bs-primary); font-size: 14px;">
+                            IP
+                        </div>
+                        <span class="fw-black" style="font-weight: 900; color: var(--bs-primary);">Inventory Pro</span>
+                    </a>
+                    
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+                    
                     <div class="collapse navbar-collapse" id="navbarColor02">
-                        <ul class="navbar-nav me-auto">
+                        <!-- Navigation Links -->
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-4 gap-2">
                             <li class="nav-item">
-                                <a class="nav-link active" asp-area="" asp-controller="Home" asp-action="Index">
-                                    Home
-                                    <span class="visually-hidden">(current)</span>
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "") d-flex align-items-center gap-2" asp-area="" asp-controller="Home" asp-action="Index">
+                                    <span class="material-symbols-outlined fs-5">home</span> Home
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Features</a>
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Proudects" ? "active" : "") d-flex align-items-center gap-2" asp-area="" asp-controller="Proudects" asp-action="Index">
+                                    <span class="material-symbols-outlined fs-5" style="font-variation-settings: 'FILL' 1;">inventory_2</span> Products
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Pricing</a>
+                                <a class="nav-link d-flex align-items-center gap-2" href="#">
+                                    <span class="material-symbols-outlined fs-5">category</span> Categories
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">About</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Separated link</a>
-                                </div>
+                                <a class="nav-link d-flex align-items-center gap-2" href="#">
+                                    <span class="material-symbols-outlined fs-5">shopping_cart</span> Orders
+                                </a>
                             </li>
                         </ul>
-                        <form class="d-flex me-3">
-                            <input class="form-control me-sm-2" type="search" placeholder="Search">
-                            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-                        </form>
-                        <partial name="_LoginPartial" />
+                        
+                        <!-- Search & Profile -->
+                        <div class="d-flex align-items-center gap-3">
+                            <form class="d-flex position-relative">
+                                <span class="material-symbols-outlined position-absolute top-50 translate-middle-y ms-3 text-secondary" style="font-size: 18px;">search</span>
+                                <input class="form-control bg-body border-secondary text-white ps-5 pe-3 py-2 shadow-none focus-ring focus-ring-primary" type="search" placeholder="Search products..." style="border-radius: 0.5rem;" />
+                            </form>
+                            
+                            <button class="btn btn-link text-secondary p-2 text-decoration-none hover-white">
+                                <span class="material-symbols-outlined">notifications</span>
+                            </button>
+                            <button class="btn btn-link text-secondary p-2 text-decoration-none hover-white">
+                                <span class="material-symbols-outlined">settings</span>
+                            </button>
+                            
+                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBd9i4h5kC4J4-P-UoUfBWGiP-HT8h-LbJiQj3P5yKHGBpVASMTEfBteKA8g72NIrwsQEToB8XTGjrRM5thmeJarKEm2Q-o4JaovZgNvqmX3jdleSkXgtdIrCwshSS94uwapz9iPbLFCL88nSEdtrxtyghMXphawlV6Qc4S6FbzyG-6p28DUsfRPYHRaTxdVGZCDcFcjw9nrKJvLKmupYaKO1Gr1INN72PEBkFwJdURUC8Th1-ABT_oN0uKl2D_TzMoBOdya3jHgA" alt="User profile" class="rounded-circle border border-secondary object-fit-cover" style="width: 36px; height: 36px;" />
+                            
+                            <partial name="_LoginPartial" />
+                        </div>
                     </div>
                 </div>
             </nav>
