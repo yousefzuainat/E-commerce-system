@@ -98,6 +98,7 @@ namespace ecommerce_system.Controllers
 
                 _context.Add(proudect);
                 await _context.SaveChangesAsync();
+                TempData["success"] = "Product created successfully";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(_context.categories, dataValueField: "Id", dataTextField: "Name", selectedValue: model.CategoryId);
@@ -170,6 +171,7 @@ namespace ecommerce_system.Controllers
 
                     _context.Update(proudect);
                     await _context.SaveChangesAsync();
+                    TempData["info"] = "Product updated successfully";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -184,6 +186,7 @@ namespace ecommerce_system.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            TempData["error"] = "Please fix the errors below.";
             ViewData["CategoryId"] = new SelectList(_context.categories, "Id", "Name", model.CategoryId);
             return View(model);
         }
@@ -217,6 +220,7 @@ namespace ecommerce_system.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["success"] = "Product deleted successfully";
             return RedirectToAction(nameof(Index));
         }
 

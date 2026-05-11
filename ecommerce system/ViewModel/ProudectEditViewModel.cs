@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace ecommerce_system.Models
+namespace ecommerce_system.ViewModel
 {
     public class ProudectEditViewModel
     {

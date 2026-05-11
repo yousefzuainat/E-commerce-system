@@ -1,74 +1,50 @@
-﻿@model ecommerce_system.Models.Proudect
+@model ecommerce_system.Models.Proudect
 
 @{
-    ViewData["Title"] = "Product Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Details";
 }
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500&family=Bebas+Neue&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="~/css/voltex_pro.css" />
+<h1>Details</h1>
 
-<div class="page-wrap">
-    <div class="breadcrumb reveal">
-        <a asp-action="Index" class="bc-item">Products</a>
-        <span class="bc-sep">›</span>
-        <span class="bc-current">Details</span>
-    </div>
-
-    <div class="page-hdr reveal">
-        <div>
-            <p class="page-eye">Product Information</p>
-            <h1 class="page-ttl">PRODUCT<br>DETAILS</h1>
-        </div>
-    </div>
-
-    <div class="v-card reveal">
-        <div class="detail-grid">
-            <div class="detail-img-wrap">
-                @if (!string.IsNullOrEmpty(Model?.Img))
-                {
-                    <img src="@Model.Img" alt="@Model.Name" />
-                }
-                else
-                {
-                    <span class="detail-img-placeholder">📦</span>
-                }
-            </div>
-
-            <div class="detail-body">
-                @if (Model?.Category != null)
-                {
-                    <span class="detail-cat">@Model.Category.Name</span>
-                }
-
-                <h2 class="detail-name">@Html.DisplayFor(m => m.Name)</h2>
-                <div class="detail-price">$@Html.DisplayFor(m => m.Price)</div>
-
-                <div class="detail-divider"></div>
-
-                <div style="margin-bottom:20px">
-                    <p class="detail-label">Description</p>
-                    <p class="detail-value">@Html.DisplayFor(m => m.Descrption)</p>
-                </div>
-
-                @if (!string.IsNullOrEmpty(Model?.Img))
-                {
-                    <div style="margin-bottom:20px">
-                        <p class="detail-label">Image URL</p>
-                        <p class="detail-value" style="word-break:break-all;font-size:12px;opacity:.7">@Html.DisplayFor(m => m.Img)</p>
-                    </div>
-                }
-
-                <div class="detail-actions">
-                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn-primary-v">
-                        <span>✏</span> Edit Product
-                    </a>
-                    <a asp-action="Index" class="btn-ghost-v">Back to List</a>
-                </div>
-            </div>
-        </div>
-    </div>
+<div>
+    <h4>Proudect</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Descrption)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Descrption)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Img)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Img)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Category.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
 </div>
 
 <script src="~/js/voltex.js"></script>
